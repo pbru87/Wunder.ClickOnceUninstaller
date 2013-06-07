@@ -20,7 +20,10 @@ namespace Wunder.ClickOnceUninstaller
         {
             var programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
             var folder = Path.Combine(programsFolder, _uninstallInfo.ShortcutFolderName);
-            var suiteFolder = Path.Combine(folder, _uninstallInfo.ShortcutSuiteName);
+			var shortcutSuiteName = !String.IsNullOrEmpty(_uninstallInfo.ShortcutSuiteName)
+                                        ? _uninstallInfo.ShortcutSuiteName
+                                        : String.Empty;
+            var suiteFolder = Path.Combine(folder, shortcutSuiteName);
             var shortcut = Path.Combine(suiteFolder, _uninstallInfo.ShortcutFileName + ".appref-ms");
             var supportShortcut = Path.Combine(suiteFolder, _uninstallInfo.SupportShortcutFileName + ".url");
 
