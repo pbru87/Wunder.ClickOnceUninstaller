@@ -7,14 +7,16 @@ namespace Wunder.ClickOnceUninstaller
     public class RemoveFiles : IUninstallStep
     {
         private string _clickOnceFolder;
+        private string _clickOnceDataFolder;
+
         private List<string> _foldersToRemove;
         private List<string> _filesToRemove;
 
         public void Prepare(List<string> componentsToRemove)
         {
-            _clickOnceFolder = FindClickOnceFolder();
-
             _foldersToRemove = new List<string>();
+            
+            _clickOnceFolder = FindClickOnceFolder();
             foreach (var directory in Directory.GetDirectories(_clickOnceFolder))
             {
                 if (componentsToRemove.Contains(Path.GetFileName(directory)))
@@ -23,6 +25,15 @@ namespace Wunder.ClickOnceUninstaller
                 }
             }
 
+            _clickOnceDataFolder = FindClickOnceDataFolder();
+            foreach (var directory in Directory.GetDirectories(_clickOnceDataFolder))
+            {
+                if (componentsToRemove.Contains(Path.GetFileName(directory)))
+                {
+                    _foldersToRemove.Add(directory);
+                }
+            }
+            
             _filesToRemove = new List<string>();
             foreach (var file in Directory.GetFiles(Path.Combine(_clickOnceFolder, "manifests")))
             {
@@ -39,6 +50,7 @@ namespace Wunder.ClickOnceUninstaller
                 throw new InvalidOperationException("Call Prepare() first.");
 
             Console.WriteLine("Remove files from " + _clickOnceFolder);
+            Console.WriteLine("Remove files from " + _clickOnceDataFolder);
 
             foreach (var folder in _foldersToRemove)
             {
@@ -78,6 +90,28 @@ namespace Wunder.ClickOnceUninstaller
         private string FindClickOnceFolder()
         {
             var apps20Folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Apps\2.0");
+            if (!Directory.Exists(apps20Folder)) throw new ArgumentException("Could not find ClickOnce folder");
+
+            foreach (var subFolder in Directory.GetDirectories(apps20Folder))
+            {
+                if ((Path.GetFileName(subFolder) ?? string.Empty).Length == 12)
+                {
+                    foreach (var subSubFolder in Directory.GetDirectories(subFolder))
+                    {
+                        if ((Path.GetFileName(subSubFolder) ?? string.Empty).Length == 12)
+                        {
+                            return subSubFolder;
+                        }
+                    }
+                }
+            }
+
+            throw new ArgumentException("Could not find ClickOnce folder");
+        }
+
+        private string FindClickOnceDataFolder()
+        {
+            var apps20Folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Apps\2.0\Data");
             if (!Directory.Exists(apps20Folder)) throw new ArgumentException("Could not find ClickOnce folder");
 
             foreach (var subFolder in Directory.GetDirectories(apps20Folder))
