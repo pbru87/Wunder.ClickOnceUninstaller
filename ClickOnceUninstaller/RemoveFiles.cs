@@ -90,31 +90,22 @@ namespace Wunder.ClickOnceUninstaller
         private string FindClickOnceFolder()
         {
             var apps20Folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Apps\2.0");
-            if (!Directory.Exists(apps20Folder)) throw new ArgumentException("Could not find ClickOnce folder");
-
-            foreach (var subFolder in Directory.GetDirectories(apps20Folder))
-            {
-                if ((Path.GetFileName(subFolder) ?? string.Empty).Length == 12)
-                {
-                    foreach (var subSubFolder in Directory.GetDirectories(subFolder))
-                    {
-                        if ((Path.GetFileName(subSubFolder) ?? string.Empty).Length == 12)
-                        {
-                            return subSubFolder;
-                        }
-                    }
-                }
-            }
-
-            throw new ArgumentException("Could not find ClickOnce folder");
+            
+            return DescendIntoSubfolders(apps20Folder);
         }
 
         private string FindClickOnceDataFolder()
         {
-            var apps20Folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Apps\2.0\Data");
-            if (!Directory.Exists(apps20Folder)) throw new ArgumentException("Could not find ClickOnce folder");
+            var dataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Apps\2.0\Data");
+            
+            return DescendIntoSubfolders(dataFolder);
+        }
 
-            foreach (var subFolder in Directory.GetDirectories(apps20Folder))
+        private static string DescendIntoSubfolders(string baseFolder)
+        {
+            if (!Directory.Exists(baseFolder)) throw new ArgumentException("Could not find ClickOnce folder.");
+
+            foreach (var subFolder in Directory.GetDirectories(baseFolder))
             {
                 if ((Path.GetFileName(subFolder) ?? string.Empty).Length == 12)
                 {
