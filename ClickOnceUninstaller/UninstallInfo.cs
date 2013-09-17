@@ -30,7 +30,7 @@ namespace Wunder.ClickOnceUninstaller
                                        ShortcutSuiteName = sub.GetValue("ShortcutSuiteName") as string,
                                        ShortcutFileName = sub.GetValue("ShortcutFileName") as string,
                                        SupportShortcutFileName = sub.GetValue("SupportShortcutFileName") as string,
-									   Version = sub.GetValue("DisplayVersion") as string
+                                       Version = sub.GetValue("DisplayVersion") as string
                                    };
                     }
                 }
@@ -49,9 +49,9 @@ namespace Wunder.ClickOnceUninstaller
 
         public string ShortcutFileName { get; set; }
 
-		public string SupportShortcutFileName { get; set; }
+        public string SupportShortcutFileName { get; set; }
 
-		public string Version { get; set; }
+        public string Version { get; set; }
 
         public string GetPublicKeyToken()
         {
