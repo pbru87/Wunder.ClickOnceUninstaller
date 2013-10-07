@@ -89,16 +89,24 @@ namespace Wunder.ClickOnceUninstaller
 
         private string FindClickOnceFolder()
         {
-            var apps20Folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Apps\2.0");
-            
-            return DescendIntoSubfolders(apps20Folder);
+            return DescendIntoSubfolders(GetApps20Folder());
         }
 
         private string FindClickOnceDataFolder()
         {
-            var dataFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Apps\2.0\Data");
-            
-            return DescendIntoSubfolders(dataFolder);
+            return DescendIntoSubfolders(Path.Combine(GetApps20Folder(), "Data"));
+        }
+
+        private static string GetApps20Folder()
+        {
+            return IsWindowsXp()
+                ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"..\Apps\2.0")
+                : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Apps\2.0");
+        }
+
+        private static bool IsWindowsXp()
+        {
+            return Environment.OSVersion.Version.Major == 5;
         }
 
         private static string DescendIntoSubfolders(string baseFolder)
