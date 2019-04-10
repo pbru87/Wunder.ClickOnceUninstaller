@@ -34,17 +34,15 @@ The included custom action for WiX is based on the .NET Framework 3.0 which is a
 
 ##### WiX
 
+	<Binary Id="ClickOnceUninstaller"
+			SourceFile="$(var.ClickOnceUninstaller.CustomAction.TargetDir)Wunder.ClickOnceUninstaller.CustomAction.CA.dll" />
+
     <Property Id="CLICKONCEAPPNAME" Value="Application Name" />
     
     <CustomAction Id="UninstallClickOnce"
                   BinaryKey="ClickOnceUninstaller"
                   DllEntry="UninstallClickOnce"
                   Return="ignore" />
-
-    <CustomAction Id="QuitRunningInstance"
-                  BinaryKey="WunderlistActions"
-                  DllEntry="QuitRunningInstance"
-                  Return="check" />
 
     <InstallExecuteSequence>
       <Custom Action="UninstallClickOnce" Before="InstallFinalize">NOT Installed</Custom>
